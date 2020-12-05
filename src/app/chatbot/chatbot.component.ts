@@ -1,5 +1,4 @@
 import { AfterViewChecked, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { concatMap, delay, switchMap, tap } from 'rxjs/operators';
@@ -11,11 +10,6 @@ import { ChatMessage } from './ChatMessage.model';
 import * as chatbotActions from './store/chatbot.actions';
 import * as chatbotSelectors from './store/chatbot.selectors';
 
-@NgModule({
-  imports: [
-    MatIconModule
-  ]
-})
 
 @Component({
   selector: 'app-chatbot',
