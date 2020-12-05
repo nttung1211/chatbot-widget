@@ -1,0 +1,83 @@
+<div [ngClass]="{'open': isOpen}" class='chatbot__container' id="chatbot-widget">
+  <div class='chatbot__header'>
+    <h2 class="chatbot__title">Check your health with Daisa</h2>
+    <div class="chatbot__header-buttons">
+      <mat-icon class="chatbot__refresh-button" (click)="refresh()">refresh</mat-icon>
+      <mat-icon class="chatbot__close-button" (click)="closeChatbot()">close</mat-icon>
+    </div>
+  </div>
+
+  <div class='chatbot__dialog-box' #dialogBox>
+    <div class='chatbot__message-wrapper' *ngFor="let message of (conversation | async)">
+      <div class='bot-icon'>
+        <!-- <img *ngIf="message.sentBy === 'bot'" [src]="env.pathOffset +'assets/images/icons/Daisa Dev.png'" alt='bot icon'> -->
+        <img *ngIf="message.sentBy === 'bot'" [src]="'https://deepcare-web-app.s3.us-east-2.amazonaws.com/Daisa+Dev.png'" alt='bot icon'>
+      </div>
+      <div class='chatbot__message' [ngClass]="{'bot-message': message.sentBy === 'bot',
+                                                'user-message': message.sentBy === 'user'}">
+        {{message.content}}
+      </div>
+    </div>
+
+    <div class='chatbot__message-wrapper' *ngFor="let option of options; let i = index">
+      <label class='chatbot__message bot-message chatbot__option' [ngClass]="{'option-selected': option.isChecked || answer[0] === option.text}">
+        <span class='chatbot__option-text'>
+          {{option.text}}
+        </span>
+        <mat-icon class="chatbot__check-icon">check</mat-icon>
+        <input *ngIf="(type | async) === 2" class='chatbot__checkbox' type="checkbox" [(ngModel)]="option.isChecked" (change)="changeSelection()">
+        <input *ngIf="(type | async) === 3" class='chatbot__checkbox' type="radio" name="choice" [(ngModel)]="answer[0]" [value]="option.text">
+      </label>
+    </div>
+
+    <ul class="chatbot__disease-list">
+      <li class="chatbot__disease" *ngFor="let disease of (diseases | async)!">
+        <h3 class="chatbot__disease-label">{{disease.label}}</h3>
+        <div class="chatbot__disease-level">
+          Mức độ: 
+          <span class="badge" [ngClass]="{'badge-success': disease.level === 1,
+                                          'badge-warning': disease.level === 2,
+                                          'badge-danger': disease.level === 3}">
+            {{
+              disease.level === 1 ? 'Nhẹ' :
+              disease.level === 2 ? 'Trung bình' :
+              'Nghiêm trọng'
+            }}
+          </span>
+        </div>
+
+        <a [href]="disease.iri" target="_blank" class='chatbot__disease-button'>Xem chi tiết >></a>
+        <a class='chatbot__disease-button chatbot__disease-button-filled'>Đặt lịch khám</a>
+      </li>
+    </ul>
+
+    <app-is-typping *ngIf="isTyping"></app-is-typping>
+  </div>
+
+
+  <div class='button-wrapper' *ngIf="(type | async) === 3 && (diseases | async)!.length === 0">
+    <button class='button bg-acent' [disabled]="isTyping || !answer[0]" (click)="onAnswer()">Tiếp tục</button>
+  </div>
+
+  <div class='button-wrapper' *ngIf="(type | async) === 2 && (diseases | async)!.length === 0">
+    <button [disabled]="isTyping" class='button bg-acent2' (click)="onAnswer(true)">Bỏ qua</button>
+    <button class='button bg-acent' [disabled]="isTyping || answer.length === 0" (click)="onAnswer()">Tiếp tục</button>
+  </div>
+
+  <div class='text-input-wrapper' *ngIf="(type | async) === 1 && (diseases | async)!.length === 0">
+    <input [disabled]="isTyping" type='text' class='text-input' placeholder="Nhập câu trả lời" (keyup.enter)="onAnswer()" [(ngModel)]="answer[0]" autocomplete="off" id="textInputELement">
+    <button class="chatbot__send-button" [disabled]="isTyping">
+      <mat-icon class='chatbot__send-icon' (click)="onAnswer()">send</mat-icon>
+    </button>
+  </div>
+
+  <div class='button-wrapper' *ngIf="(diseases | async)!.length > 0">
+    <button class='button bg-acent2' (click)="refresh()">Kiểm tra lại</button>
+    <button class='button bg-acent'>Đặt lịch khám</button>
+  </div>
+</div>
+
+<a class='chatbot__icon' (click)="openChatbot()">
+  <!-- <img [src]="env.pathOffset +'assets/images/icons/Chat Web.svg'"> -->
+  <img [src]="'https://deepcare-web-app.s3.us-east-2.amazonaws.com/Chat+Web.svg'">
+</a>
