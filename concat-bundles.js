@@ -9,7 +9,7 @@ const concat = require('concat');
     './dist/chatbot-widget/main.js'
   ];
 
-  await fs.ensureDir('elements');
-  await concat(files, 'elements/chatbot-widget.js');
+  await fs.ensureDir('test/chatbot-widget');
+  await concat(files, 'test/chatbot-widget/script.js');
 
 }) ();

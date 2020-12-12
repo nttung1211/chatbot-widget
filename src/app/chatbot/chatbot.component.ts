@@ -14,12 +14,12 @@ import * as chatbotSelectors from './store/chatbot.selectors';
 @Component({
   selector: 'app-chatbot',
   templateUrl: './chatbot.component.html',
-  styleUrls: ['./chatbot.component.scss'],
-  encapsulation: ViewEncapsulation.ShadowDom
+  styleUrls: ['./chatbot.component.scss']
 })
 export class ChatbotComponent implements OnInit, OnDestroy, AfterViewChecked {
-  isOpen = false;
-  initial = true;
+  uiSetName: string = 'default';
+  isOpen: boolean = false;
+  initial: boolean = true;
   answer: string[] = [];
 
   options: ChatbotOption[] = [];
@@ -95,6 +95,23 @@ export class ChatbotComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
       )
     );
+
+    const head  = document.getElementsByTagName('head')[0];
+    const link  = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'https://deepcare-chatbot-widget.s3-ap-southeast-1.amazonaws.com/ui-sets/' + this.uiSetName +  '/styles/style.css';
+    // link.href = './chatbot-widget/assets/css/style.css';
+    link.media = 'all';
+    // head.appendChild(link);
+
+    const body  = document.getElementsByTagName('body')[0];
+    const script  = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://deepcare-chatbot-widget.s3-ap-southeast-1.amazonaws.com/ui-sets/' + this.uiSetName +  '/js/fontawesome.js';
+    // script.src = './chatbot-widget/assets/js/fontawesome.js';
+    script.defer = true;
+    body.appendChild(script);
   }
 
   onAnswer(skip: boolean = false) {
@@ -144,6 +161,7 @@ export class ChatbotComponent implements OnInit, OnDestroy, AfterViewChecked {
   openChatbot() {
     if (this.initial) {
       this.store.dispatch(chatbotActions.refreshConversation());
+      
       const metaTag = document.querySelector('meta[name="viewport"]') as HTMLMetaElement;
       metaTag.content = "width=device-width, initial-scale=1, maximum-scale=1"; 
       this.initial = false;

@@ -1,30 +1,35 @@
-<div [ngClass]="{'open': isOpen}" class='chatbot__container' id="chatbot-widget">
+<div [ngClass]="{'chatbot__open': isOpen}" class='chatbot__container'>
   <div class='chatbot__header'>
-    <h2 class="chatbot__title">Check your health with Daisa</h2>
+    <!-- <h2 class="chatbot__title">Check your health with Daisa</h2> -->
+    <div class='chatbot__logo'>
+      <img class="chatbot__img" [src]="env.pathOffset +'assets/images/chatbot-logos/logo.png'" alt='logo'>
+      <!-- <img class="chatbot__img" [src]="'https://deepcare-chatbot-widget.s3-ap-southeast-1.amazonaws.com/ui-sets/' + uiSetName +  '/images/logo.png'" alt='logo'> -->
+    </div>
     <div class="chatbot__header-buttons">
-      <mat-icon class="chatbot__refresh-button" (click)="refresh()">refresh</mat-icon>
-      <mat-icon class="chatbot__close-button" (click)="closeChatbot()">close</mat-icon>
+      <i class="fas fa-redo chatbot__refresh-button" (click)="refresh()"></i>
+      <i class="fas fa-times chatbot__close-button" (click)="closeChatbot()"></i>
     </div>
   </div>
 
   <div class='chatbot__dialog-box' #dialogBox>
     <div class='chatbot__message-wrapper' *ngFor="let message of (conversation | async)">
-      <div class='bot-icon'>
-        <!-- <img *ngIf="message.sentBy === 'bot'" [src]="env.pathOffset +'assets/images/icons/Daisa Dev.png'" alt='bot icon'> -->
-        <img *ngIf="message.sentBy === 'bot'" [src]="'https://deepcare-web-app.s3.us-east-2.amazonaws.com/Daisa+Dev.png'" alt='bot icon'>
+      <div class='chatbot__bot-icon'>
+        <img class="chatbot__img" *ngIf="message.sentBy === 'bot'" [src]="env.pathOffset +'assets/images/chatbot-icons/bot.png'" alt='bot icon'>
+        <!-- <img class="chatbot__img" *ngIf="message.sentBy === 'bot'" [src]="'https://deepcare-chatbot-widget.s3-ap-southeast-1.amazonaws.com/ui-sets/' + uiSetName +  '/images/bot.png'" alt='bot icon'> -->
       </div>
-      <div class='chatbot__message' [ngClass]="{'bot-message': message.sentBy === 'bot',
-                                                'user-message': message.sentBy === 'user'}">
+      <div class='chatbot__message' [ngClass]="{'chatbot__bot-message': message.sentBy === 'bot',
+                                                'chatbot__user-message': message.sentBy === 'user'}">
         {{message.content}}
       </div>
     </div>
 
     <div class='chatbot__message-wrapper' *ngFor="let option of options; let i = index">
-      <label class='chatbot__message bot-message chatbot__option' [ngClass]="{'option-selected': option.isChecked || answer[0] === option.text}">
+      <label class='chatbot__message chatbot__bot-message chatbot__option' [ngClass]="{'chatbot__option-selected': option.isChecked || answer[0] === option.text}">
         <span class='chatbot__option-text'>
           {{option.text}}
         </span>
-        <mat-icon class="chatbot__check-icon">check</mat-icon>
+        <i class="fas fa-check chatbot__check-icon"></i>
+        <!-- <mat-icon class="chatbot__check-icon">check</mat-icon> -->
         <input *ngIf="(type | async) === 2" class='chatbot__checkbox' type="checkbox" [(ngModel)]="option.isChecked" (change)="changeSelection()">
         <input *ngIf="(type | async) === 3" class='chatbot__checkbox' type="radio" name="choice" [(ngModel)]="answer[0]" [value]="option.text">
       </label>
@@ -35,9 +40,9 @@
         <h3 class="chatbot__disease-label">{{disease.label}}</h3>
         <div class="chatbot__disease-level">
           Mức độ: 
-          <span class="badge" [ngClass]="{'badge-success': disease.level === 1,
-                                          'badge-warning': disease.level === 2,
-                                          'badge-danger': disease.level === 3}">
+          <span class="chatbot__badge" [ngClass]="{'chatbot__badge-success': disease.level === 1,
+                                          'chatbot__badge-warning': disease.level === 2,
+                                          'chatbot__badge-danger': disease.level === 3}">
             {{
               disease.level === 1 ? 'Nhẹ' :
               disease.level === 2 ? 'Trung bình' :
@@ -55,29 +60,32 @@
   </div>
 
 
-  <div class='button-wrapper' *ngIf="(type | async) === 3 && (diseases | async)!.length === 0">
-    <button class='button bg-acent' [disabled]="isTyping || !answer[0]" (click)="onAnswer()">Tiếp tục</button>
+  <div class='chatbot__button-wrapper' *ngIf="(type | async) === 3 && (diseases | async)!.length === 0">
+    <button class='chatbot__button chatbot__bg-acent' [disabled]="isTyping || !answer[0]" (click)="onAnswer()">Tiếp tục</button>
   </div>
 
-  <div class='button-wrapper' *ngIf="(type | async) === 2 && (diseases | async)!.length === 0">
-    <button [disabled]="isTyping" class='button bg-acent2' (click)="onAnswer(true)">Bỏ qua</button>
-    <button class='button bg-acent' [disabled]="isTyping || answer.length === 0" (click)="onAnswer()">Tiếp tục</button>
+  <div class='chatbot__button-wrapper' *ngIf="(type | async) === 2 && (diseases | async)!.length === 0">
+    <button [disabled]="isTyping" class='chatbot__button chatbot__bg-acent2' (click)="onAnswer(true)">Bỏ qua</button>
+    <button class='chatbot__button chatbot__bg-acent' [disabled]="isTyping || answer.length === 0" (click)="onAnswer()">Tiếp tục</button>
   </div>
 
-  <div class='text-input-wrapper' *ngIf="(type | async) === 1 && (diseases | async)!.length === 0">
-    <input [disabled]="isTyping" type='text' class='text-input' placeholder="Nhập câu trả lời" (keyup.enter)="onAnswer()" [(ngModel)]="answer[0]" autocomplete="off" id="textInputELement">
+  <div class='chatbot__text-input-wrapper' *ngIf="(type | async) === 1 && (diseases | async)!.length === 0">
+    <input [disabled]="isTyping" type='text' class='chatbot__text-input' placeholder="Nhập câu trả lời" (keyup.enter)="onAnswer()" [(ngModel)]="answer[0]" autocomplete="off" id="textInputELement">
     <button class="chatbot__send-button" [disabled]="isTyping">
-      <mat-icon class='chatbot__send-icon' (click)="onAnswer()">send</mat-icon>
+      <i class="fas fa-paper-plane chatbot__send-icon" (click)="onAnswer()"></i>
+      <!-- <mat-icon class='chatbot__send-icon' (click)="onAnswer()">send</mat-icon> -->
     </button>
   </div>
 
-  <div class='button-wrapper' *ngIf="(diseases | async)!.length > 0">
-    <button class='button bg-acent2' (click)="refresh()">Kiểm tra lại</button>
-    <button class='button bg-acent'>Đặt lịch khám</button>
+  <div class='chatbot__button-wrapper' *ngIf="(diseases | async)!.length > 0">
+    <button class='chatbot__button chatbot__bg-acent2' (click)="refresh()">Kiểm tra lại</button>
+    <button class='chatbot__button chatbot__bg-acent'>Đặt lịch khám</button>
   </div>
+  
 </div>
 
 <a class='chatbot__icon' (click)="openChatbot()">
-  <!-- <img [src]="env.pathOffset +'assets/images/icons/Chat Web.svg'"> -->
-  <img [src]="'https://deepcare-web-app.s3.us-east-2.amazonaws.com/Chat+Web.svg'">
+  <img class="chatbot__img" [src]="env.pathOffset +'assets/images/chatbot-icons/toggler.svg'" alt='chatbot toggler icon'>
+  <!-- <img class="chatbot__img" [src]="'https://deepcare-chatbot-widget.s3-ap-southeast-1.amazonaws.com/ui-sets/' + uiSetName +  '/images/toggler.svg'"> -->
 </a>
+

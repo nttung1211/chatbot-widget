@@ -1,0 +1,7 @@
+* đăt hẹn:
+- hỏi thông tin
++ họ tên
++ Ngày sinh
++ sdt
++ ngày muốn khám
++ ca muốn khám ( sáng, chiều, tối)

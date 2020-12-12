@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class IsTyppingComponent implements OnInit {
   env = environment;
+  uiSetName: string = 'default';
 
   constructor() { }
 
